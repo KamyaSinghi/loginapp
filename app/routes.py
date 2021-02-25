@@ -1,8 +1,11 @@
 from app import *
 from app.models.user import User
 from flask_login import login_user, login_manager
-
+from flask_login import LoginManager
 from app.forms import loginForm, registerForm
+
+login_manager= LoginManager()
+login_manager.init_app(app)
 
 @app.route('/')
 def home():
@@ -12,7 +15,9 @@ def home():
 def main():
     return render_template("main.html")
 
-
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(int(user_id))
 
 @app.route('/register', methods=["GET","POST"])
 def register():
